@@ -54,9 +54,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
     return (
         <Sidebar {...props}>
-            <SidebarHeader>
-
-                Header Here
+            <SidebarHeader className="h-30 flex items-center justify-center border-b">
+                <img className="max-h-40 max-w-35" src="src/assets/di_logo.png" />
             </SidebarHeader>
             <SidebarContent className="gap-0">
                 {/* We create a collapsible SidebarGroup for each parent. */}

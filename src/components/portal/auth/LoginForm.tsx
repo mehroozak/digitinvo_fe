@@ -43,9 +43,6 @@ const LoginForm: React.FC<LoginFormType> = ({ className, props }) => {
             <Card className="w-md mx-auto mt-10 border-0 shadow-none">
                 <CardHeader className="text-center">
                     <CardTitle className="text-xl">Welcome back</CardTitle>
-                    <CardDescription>
-                        Login with your Credentials
-                    </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Form {...form} >
@@ -53,7 +50,7 @@ const LoginForm: React.FC<LoginFormType> = ({ className, props }) => {
                             <div className="grid gap-6">
                                 <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                                     <span className="bg-card text-muted-foreground relative z-10 px-2">
-                                        Or continue with
+                                        Login with your Credentials
                                     </span>
                                 </div>
                                 <div className="grid gap-6">

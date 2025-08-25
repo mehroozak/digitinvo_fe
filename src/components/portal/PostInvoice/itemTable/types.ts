@@ -1,0 +1,7 @@
+import type { UseFormReturn } from "react-hook-form";
+import type z from "zod";
+import type { PostInvoiceSchema } from "../schemas";
+
+export type ItemTableType = {
+    form: UseFormReturn<z.infer<typeof PostInvoiceSchema>>;
+}

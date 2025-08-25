@@ -5,6 +5,7 @@ import AuthLayout from '@/layouts/Auth'
 import Home from '@/pages/website/Home'
 import Login from './pages/portal/auth/Login'
 import PortalLayout from './layouts/Portal'
+import PostInvoice from './pages/portal/invoice/PostInvoice'
 
 function App() {
 
@@ -17,7 +18,7 @@ function App() {
         <Route path="login" element={<Login />} />
       </Route>
       <Route path='/app' element={< PortalLayout/>}>
-        <Route index element={<div>invoice</div>} />
+        <Route index element={<PostInvoice />} />
         <Route path="invoices" element={<div>invoices</div>} />
         <Route path="customers" element={<div>customers</div>} />
       </Route>

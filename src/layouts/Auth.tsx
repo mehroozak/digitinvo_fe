@@ -8,12 +8,8 @@ const AuthLayout: React.FC<{ children?: React.ReactNode }> = () => {
             <Navbar />
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 <Outlet />
-                <div className='w-full h-full hidden md:block'>
-                    <img
-                        src="../src/assets/images/Data_security_01.jpg"
-                        alt="Authentication Illustration"
-                        className="w-full h-auto object-cover rounded-lg shadow-md"
-                    />
+                <div className='w-full h-screen hidden md:block bg-primary flex items-center justify-center'>
+                    <img className='max-h-96 max-w-96' src="/src/assets/di_logo.png" alt="DigitInvo Logo" />
                 </div>
             </div>
         </div>
