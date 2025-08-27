@@ -17,11 +17,14 @@ import { Calendar } from '@/components/elements/calendar';
 import { Input } from '@/components/elements/input';
 import Benificiary from '@/components/portal/PostInvoice/Benificiary';
 import CustomerForm from '@/components/portal/PostInvoice/CustomerForm';
-import ItemTable from '@/components/portal/PostInvoice/itemTable/ItemTable';
+import ItemForm from '@/components/portal/PostInvoice/ItemForm';
+import { invoiceState } from '@/store/slices/IinvoiceSlice';
+import ItemCard from '@/components/portal/PostInvoice/itemTable/ItemCard';
 
 const PostInvoice: React.FC = () => {
   const logo = useAppSelector(organizationLogo);
   const org = useAppSelector(organizationState);
+  const invoice = useAppSelector(invoiceState)
 
   const invoiceTypes = [
     { label: INVOICE_TYPES.SALES, value: INVOICE_TYPES.SALES },
@@ -31,25 +34,26 @@ const PostInvoice: React.FC = () => {
   const form = useForm<z.infer<typeof PostInvoiceSchema>>({
     resolver: zodResolver(PostInvoiceSchema),
     defaultValues: {
-      refNo: '',
-      invoiceType: INVOICE_TYPES.SALES,
-      invoiceDate: moment().format('YYYY-MM-DD'),
+      invoiceRefNo: invoice.invoiceRefNo,
+      invoiceType: invoice.invoiceType,
+      invoiceDate: invoice.invoiceDate,
       sellerNTNCNIC: organization?.ntn || '',
       sellerBusinessName: organization?.name || '',
       sellerAddress: organization?.address || '',
       sellerProvince: organization?.province || '',
       customer: {
-        buyerNTNCNIC: '',
-        buyerBusinessName: '',
-        buyerAddress: '',
-        buyerProvince: '',
-        buyeRegistrationType: REGISTRATION_TYPES.UN_REGISTERED,
+        buyerNTNCNIC: invoice.customer.buyerNTNCNIC,
+        buyerBusinessName: invoice.customer.buyerBusinessName,
+        buyerAddress: invoice.customer.buyerAddress,
+        buyerProvince: invoice.customer.buyerProvince,
+        buyeRegistrationType: invoice.customer.buyeRegistrationType,
       },
-      items: [],
+      items: invoice.items,
     },
   })
   const formVals = form.watch();
-  console.log(form.watch())
+  const items = form.getValues('items')
+  
 
 
 
@@ -58,7 +62,7 @@ const PostInvoice: React.FC = () => {
   }
 
   return (
-    <div className='border-1 rounded-2xl h-screen'>
+    <div className='border-1 rounded-2xl h-full py-2'>
       {/* Header */}
       <Form {...form} >
         <form onSubmit={form.handleSubmit(onSubmit)} className="">
@@ -168,7 +172,7 @@ const PostInvoice: React.FC = () => {
                 <FormMessage />
               </FormItem>
             )} />
-            <FormField control={form.control} name="refNo" render={({ field }) => (
+            <FormField control={form.control} name="invoiceRefNo" render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Reference Number (Optional)</FormLabel>
                 <FormControl>
@@ -178,15 +182,20 @@ const PostInvoice: React.FC = () => {
               </FormItem>
             )} />
           </div>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4 p-2'>
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4 p-2'>
             <Benificiary form={form} />
-            <CustomerForm form={form} />
+            <div className='col-span-2'>
+              <CustomerForm form={form} />
+            </div>
           </div>
           {formVals.invoiceDate && formVals.customer.buyerBusinessName && <div className='grid grid-cols-1 p-2'>
             <span className='text-lg font-semibold'>Subject: {formVals.invoiceType} to {formVals.customer.buyerBusinessName}</span>
           </div>}
-          <div className='px-2 overflow-x-auto'> 
-            <ItemTable form={form} />
+          <div className='grid grid-cols-1 p-2'>
+            <ItemForm />
+          </div>
+          <div className='px-2 overflow-x-auto'>
+            {items.map((item, index) => <ItemCard key={`it_${index}`} item={item}/>)}
           </div>
 
         </form>

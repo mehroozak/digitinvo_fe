@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '@/store/store'
 import type { InvoiceStateInterface } from './types'
+import moment from 'moment'
 
 
 // Define a type for the slice state
@@ -10,12 +11,12 @@ import type { InvoiceStateInterface } from './types'
 // Define the initial state using that type
 const initialState: InvoiceStateInterface = {
   invoiceType: '',
-  invoiceDate: '',
+  invoiceDate: moment().format('YYYY-MM-DD'),
   sellerNTNCNIC: '',
   sellerBusinessName: '',
   sellerProvince: '',
   sellerAddress: '',
-  custome: {
+  customer: {
     buyerNTNCNIC: '',
     buyerBusinessName: '',
     buyerProvince: '',
@@ -27,7 +28,7 @@ const initialState: InvoiceStateInterface = {
   items: [
     {
       "hsCode": "1234.56",
-      "productDescription": "Plastic Bottles",
+      "productDescription": "FISH AND CRUSTACEANS, MOLLUSCS AND OTHER AQUATIC INVERTEBRATES - FISH FILLETS AND OTHER FISH MEAT (WHETHER OR NOT MINCED), FRESH, CHILLED OR FROZEN. - HAKE (MERLUCCIUS SPP., UROPHYCIS SPP.)",
       "rate": '18.5',
       "uoM": "pcs",
       "quantity": 100,

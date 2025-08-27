@@ -9,3 +9,7 @@ export type BenificiaryType = {
 export type CustomerFormType = {
     form?: any
 }
+
+export type ItemFormType = {
+    form?: any
+}

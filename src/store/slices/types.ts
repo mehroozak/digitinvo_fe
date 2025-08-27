@@ -1,5 +1,6 @@
 
-export interface InvoiceItemInterface {
+export type InvoiceItemInterface {
+    key?: number,
     hsCode: string,
     productDescription: string,
     rate: string,
@@ -28,7 +29,7 @@ export interface InvoiceStateInterface {
     sellerBusinessName: string,
     sellerProvince: string,
     sellerAddress: string,
-    custome: {
+    customer: {
         buyerNTNCNIC?: string,
         buyerBusinessName: string,
         buyerProvince: string,
@@ -74,3 +75,37 @@ export interface OrganizationStateInterface {
     logo?: MediaStateInterface | null,
 }
 
+
+type ProviceType= {
+    stateProvinceCode: number,
+    stateProvinceDesc: string
+}
+type DocTypeType = {
+    docTypeId: number,
+    docDescription: string
+}
+type ItemCodeType = {
+    hS_CODE: string,
+    description: string
+}
+type SroItemCodeType = {
+  srO_ITEM_ID: number,
+  srO_ITEM_DESC: string
+}
+type TransTypeCodeType = {
+    transactioN_TYPE_ID: number,
+    transactioN_DESC: string
+}
+type UomType = {
+    uoM_ID: number,
+    description: string
+}
+
+export interface LookUpStateInterface {
+    province: ProviceType[]
+    docType: DocTypeType[]
+    itemCode: ItemCodeType[]
+    sroItemCode: SroItemCodeType[]
+    transTypeCode: TransTypeCodeType[]
+    uom: UomType[]
+}

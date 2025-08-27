@@ -16,7 +16,7 @@ const CustomerForm: React.FC<CustomerFormType> = ({ form }) => {
     <Card className="p-4 border rounded-lg">
       <CardTitle className="text-lg font-semibold text-foreground">Customer Details</CardTitle>
       <CardContent className='p-0'>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-2'>
           <FormField control={form.control} name="customer.buyerBusinessName" render={({ field }) => (
             <FormItem >
               <FormLabel className='mb-1 font-medium text-sm text-foreground'>Customer Business Name</FormLabel>
@@ -47,6 +47,30 @@ const CustomerForm: React.FC<CustomerFormType> = ({ form }) => {
                   </div>
                 </PopoverContent>
               </Popover>
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="customer.buyeRegistrationType" render={({ field }) => (
+            <FormItem>
+              <FormLabel className='mb-1 font-medium text-sm text-foreground'>First Name</FormLabel>
+              <FormControl>
+                <Input
+                  className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                  placeholder='Customer First Name'
+                  {...field}
+                />
+              </FormControl>
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="customer.buyeRegistrationType" render={({ field }) => (
+            <FormItem>
+              <FormLabel className='mb-1 font-medium text-sm text-foreground'>Last Name</FormLabel>
+              <FormControl>
+                <Input
+                  className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                  placeholder='Customer last Name'
+                  {...field}
+                />
+              </FormControl>
             </FormItem>
           )} />
           <FormField control={form.control} name="customer.buyerNTNCNIC" render={({ field }) => (
@@ -85,7 +109,7 @@ const CustomerForm: React.FC<CustomerFormType> = ({ form }) => {
               </FormControl>
             </FormItem>
           )} />
-          <div className='md:col-span-2'>
+          <div className='md:col-span-3'>
             <FormField control={form.control} name="customer.buyerAddress" render={({ field }) => (
             <FormItem>
               <FormLabel className='mb-1 font-medium text-sm text-foreground'>Customer Address</FormLabel>

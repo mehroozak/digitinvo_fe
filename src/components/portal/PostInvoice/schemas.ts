@@ -3,7 +3,7 @@ import * as z from "zod";
 export const PostInvoiceItemSchema = z.object({
     hsCode: z.string().min(1, "HS Code is required"),
     productDescription: z.string().min(1, "Item description is required"),
-    rate: z.number().min(0, "Tax Rate must be at least 0"),
+    rate: z.string().min(0, "Tax Rate must be at least 0"),
     uoM: z.string().min(1, "Unit of Measure is required"),
     quantity: z.number().min(1, "Quantity must be at least 1"),
     totalValues: z.number().min(0, "Total Value must be at least 0"),
@@ -21,7 +21,7 @@ export const PostInvoiceItemSchema = z.object({
 })
 
 export const PostInvoiceSchema = z.object({
-    refNo: z.string().optional(),
+    invoiceRefNo: z.string().optional(),
     invoiceType: z.string().min(1, "Invoice type is required"),
     invoiceDate: z.iso.date(),
     sellerNTNCNIC: z.string().min(1, "Seller NTN/CNIC is required"),
