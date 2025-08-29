@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ItemFormType } from './types';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
@@ -16,22 +16,51 @@ import { cn } from '@/lib/utils';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/elements/command';
 import { Card, CardContent } from '@/components/elements/card';
+import type { RateType, TransTypeCodeType } from '@/store/slices/types';
 
-const ItemForm: React.FC<ItemFormType> = ({ form: ParentForm }) => {
+const ItemForm: React.FC<ItemFormType> = ({ form: parentForm }) => {
+  const date = parentForm.watch('invoiceDate')
+  const province = parentForm.watch('sellerProvince')
   const lookups = useAppSelector(lookupState)
+  const [taxClases, setTaxClases] = useState<RateType[]>([])
+  // const [transactionTypeObj, setTransactionTypeObj] = useState<TransTypeCodeType | null>(null)
 
   const form = useForm<z.infer<typeof PostInvoiceItemSchema>>({
     resolver: zodResolver(PostInvoiceItemSchema),
     defaultValues: {
       productDescription: '',
       rate: undefined,
-      uoM: ''
+      uoM: undefined,
+      quantity: 0,
     }
   })
+  const formVals = form.watch()
+  console.log('Item', formVals)
+
+  const salesType = form.watch('saleType')
+
+  useEffect(() => {
+    // /SaleTypeToRate?date=24-Feb2024&transTypeId=18&originationSupplier=1
+    if (date && salesType?.transactioN_TYPE_ID && province?.stateProvinceCode) {
+      // Implement Call For tax Rates 
+      setTaxClases([
+        {
+          "ratE_ID": 734,
+          "ratE_DESC": "18% along with rupees 60 per kilogram",
+          "ratE_VALUE": 18
+        }
+        ,
+        {
+          "ratE_ID": 280,
+          "ratE_DESC": "0%",
+          "ratE_VALUE": 0
+        }
+      ])
+
+    }
 
 
-
-
+  }, [date, salesType, province])
 
 
   function onSubmit(data: z.infer<typeof PostInvoiceItemSchema>) {
@@ -127,14 +156,14 @@ const ItemForm: React.FC<ItemFormType> = ({ form: ParentForm }) => {
                   <FormField control={form.control} name="uoM" render={({ field }) => (
                     <FormItem className="">
                       <FormLabel>Unit Of Measure</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select onValueChange={(v) => v ? field.onChange(JSON.parse(v)) : field.onChange(null)} value={field.value ? JSON.stringify(field.value) : ''}>
                         <FormControl>
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select UOM" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {lookups.uom.map((um) => <SelectItem key={um.description} value={um.description}>{um.description}</SelectItem>)}
+                          {lookups.uom.map((um) => <SelectItem key={um.description} value={um ? JSON.stringify(um) : ''}>{um.description}</SelectItem>)}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -164,14 +193,14 @@ const ItemForm: React.FC<ItemFormType> = ({ form: ParentForm }) => {
                   <FormField control={form.control} name="saleType" render={({ field }) => (
                     <FormItem className="">
                       <FormLabel>Sale Type</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select onValueChange={(v) => v ? field.onChange(JSON.parse(v)) : field.onChange(null)} value={field.value ? JSON.stringify(field.value) : ''}>
                         <FormControl>
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select type" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {lookups.transTypeCode.map((ttc) => <SelectItem key={ttc.transactioN_DESC} value={ttc.transactioN_DESC}>{ttc.transactioN_DESC}</SelectItem>)}
+                          {lookups.transTypeCode.map((ttc) => <SelectItem key={ttc.transactioN_DESC} value={ttc ? JSON.stringify(ttc) : ''}>{ttc.transactioN_DESC}</SelectItem>)}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -181,14 +210,14 @@ const ItemForm: React.FC<ItemFormType> = ({ form: ParentForm }) => {
                   <FormField control={form.control} name="rate" render={({ field }) => (
                     <FormItem className="">
                       <FormLabel>Taxt Rate</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select onValueChange={(v) => v ? field.onChange(JSON.parse(v)) : field.onChange(null)} value={field.value ? JSON.stringify(field.value) : ''}>
                         <FormControl>
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select Rate" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {lookups.transTypeCode.map((ttc) => <SelectItem key={ttc.transactioN_DESC} value={ttc.transactioN_DESC}>{ttc.transactioN_DESC}</SelectItem>)}
+                          {taxClases.map((ttc) => <SelectItem key={ttc.ratE_DESC} value={ttc ? JSON.stringify(ttc) : ''}>{ttc.ratE_DESC}</SelectItem>)}
                         </SelectContent>
                       </Select>
                       <FormMessage />

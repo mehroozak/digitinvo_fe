@@ -20,27 +20,26 @@ import CustomerForm from '@/components/portal/PostInvoice/CustomerForm';
 import ItemForm from '@/components/portal/PostInvoice/ItemForm';
 import { invoiceState } from '@/store/slices/IinvoiceSlice';
 import ItemCard from '@/components/portal/PostInvoice/itemTable/ItemCard';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/elements/select';
+import { lookupState } from '@/store/slices/lookupSlice';
 
 const PostInvoice: React.FC = () => {
   const logo = useAppSelector(organizationLogo);
   const org = useAppSelector(organizationState);
-  const invoice = useAppSelector(invoiceState)
+  const invoice = useAppSelector(invoiceState);
+  const lookups = useAppSelector(lookupState)
 
-  const invoiceTypes = [
-    { label: INVOICE_TYPES.SALES, value: INVOICE_TYPES.SALES },
-    { label: INVOICE_TYPES.DEBIT, value: INVOICE_TYPES.DEBIT },
-  ]
   const organization = useAppSelector(organizationState);
   const form = useForm<z.infer<typeof PostInvoiceSchema>>({
     resolver: zodResolver(PostInvoiceSchema),
     defaultValues: {
       invoiceRefNo: invoice.invoiceRefNo,
-      invoiceType: invoice.invoiceType,
+      invoiceType: invoice.invoiceType ?? undefined,
       invoiceDate: invoice.invoiceDate,
       sellerNTNCNIC: organization?.ntn || '',
       sellerBusinessName: organization?.name || '',
       sellerAddress: organization?.address || '',
-      sellerProvince: organization?.province || '',
+      sellerProvince: organization.province,
       customer: {
         buyerNTNCNIC: invoice.customer.buyerNTNCNIC,
         buyerBusinessName: invoice.customer.buyerBusinessName,
@@ -52,8 +51,9 @@ const PostInvoice: React.FC = () => {
     },
   })
   const formVals = form.watch();
+  console.log('invoice', formVals)
   const items = form.getValues('items')
-  
+
 
 
 
@@ -84,55 +84,16 @@ const PostInvoice: React.FC = () => {
             <FormField control={form.control} name="invoiceType" render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Invoice Type</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button variant="outline" role="combobox"
-                        className={cn(
-                          "justify-between",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value
-                          ? invoiceTypes.find(
-                            (it) => it.value === field.value
-                          )?.label
-                          : "Select Type"}
-                        <ChevronsUpDown className="opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="!w-full p-0 justify-start">
-                    <Command>
-                      <CommandInput
-                        placeholder="Search here..."
-                        className="h-9"
-                      />
-                      <CommandList>
-                        <CommandEmpty>None.</CommandEmpty>
-                        <CommandGroup>
-                          {invoiceTypes.map((language) => (
-                            <CommandItem
-                              value={language.label}
-                              key={language.value}
-                              onSelect={() => { field.onChange(language.value) }}
-                            >
-                              {language.label}
-                              <Check
-                                className={cn(
-                                  "ml-auto",
-                                  language.value === field.value
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                <Select onValueChange={(v) => field.onChange(JSON.parse(v))} value={JSON.stringify(field.value)}>
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select UOM" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {lookups.docType.map((val) => <SelectItem key={val.docDescription} value={JSON.stringify(val)}>{val.docDescription}</SelectItem>)}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )} />
@@ -189,13 +150,13 @@ const PostInvoice: React.FC = () => {
             </div>
           </div>
           {formVals.invoiceDate && formVals.customer.buyerBusinessName && <div className='grid grid-cols-1 p-2'>
-            <span className='text-lg font-semibold'>Subject: {formVals.invoiceType} to {formVals.customer.buyerBusinessName}</span>
+            <span className='text-lg font-semibold'>Subject: {formVals.invoiceType?.docDescription} to {formVals.customer.buyerBusinessName}</span>
           </div>}
           <div className='grid grid-cols-1 p-2'>
-            <ItemForm />
+            <ItemForm form={form} />
           </div>
           <div className='px-2 overflow-x-auto'>
-            {items.map((item, index) => <ItemCard key={`it_${index}`} item={item}/>)}
+            {items.map((item, index) => <ItemCard key={`it_${index}`} item={item} />)}
           </div>
 
         </form>

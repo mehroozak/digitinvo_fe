@@ -6,8 +6,11 @@ import { Popover, PopoverAnchor } from '@radix-ui/react-popover';
 import { Input } from '@/components/elements/input';
 import { PopoverContent } from '@/components/elements/popover';
 import { Textarea } from '@/components/elements/textarea';
+import { useAppSelector } from '@/hooks/redux';
+import { lookupState } from '@/store/slices/lookupSlice';
 
 const CustomerForm: React.FC<CustomerFormType> = ({ form }) => {
+  const lookups = useAppSelector(lookupState)
   const businesName = form?.watch("customer.buyerBusinessName") || "";
   const [isBusinessFocussed, setIsBusinessFocussed] = useState<boolean>(false)
 

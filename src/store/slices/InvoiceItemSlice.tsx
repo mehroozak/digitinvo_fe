@@ -12,7 +12,7 @@ import type { ValueOf } from 'type-fest'
 const initialState: InvoiceItemInterface = {
     "hsCode": "",
     "productDescription": "",
-    "rate": '',
+    "rate": null,
     "uoM": "",
     "quantity": 0,
     "totalValues": 0,
@@ -24,7 +24,7 @@ const initialState: InvoiceItemInterface = {
     "furtherTax": 0,
     "fedPayable": 0,
     "discount": 0,
-    "saleType": "",
+    "saleType": null,
     "sroItemSerialNo": "",
 }
 

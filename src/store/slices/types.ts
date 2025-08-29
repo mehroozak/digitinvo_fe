@@ -1,10 +1,44 @@
+import { z } from "zod";
 
-export type InvoiceItemInterface {
+
+export type ProviceType = {
+    stateProvinceCode: number,
+    stateProvinceDesc: string
+}
+export type DocTypeType = {
+    docTypeId: number,
+    docDescription: string
+}
+export type ItemCodeType = {
+    hS_CODE: string,
+    description: string
+}
+export type SroItemCodeType = {
+    srO_ITEM_ID: number,
+    srO_ITEM_DESC: string
+}
+export type TransTypeCodeType = {
+    transactioN_TYPE_ID: number,
+    transactioN_DESC: string
+}
+export type UomType = {
+    uoM_ID: number,
+    description: string
+}
+
+export type RateType = {
+    ratE_ID: number,
+    ratE_DESC: string,
+    ratE_VALUE: number
+}
+
+
+export interface InvoiceItemInterface {
     key?: number,
     hsCode: string,
     productDescription: string,
-    rate: string,
-    uoM: string,
+    rate: RateType | null,
+    uoM: UomType,
     quantity: number,
     totalValues: number,
     valueSalesExcludingST: number,
@@ -16,23 +50,23 @@ export type InvoiceItemInterface {
     sroScheduleNo?: string,
     fedPayable?: number,
     discount?: number,
-    saleType: string,
+    saleType: TransTypeCodeType | null,
     sroItemSerialNo?: string,
 }
 
 
 export interface InvoiceStateInterface {
     id?: number,
-    invoiceType: string,
+    invoiceType: DocTypeType | null,
     invoiceDate: string,
     sellerNTNCNIC: string,
     sellerBusinessName: string,
-    sellerProvince: string,
+    sellerProvince: ProviceType | null,
     sellerAddress: string,
     customer: {
         buyerNTNCNIC?: string,
         buyerBusinessName: string,
-        buyerProvince: string,
+        buyerProvince: ProviceType | null,
         buyerAddress: string,
         buyeRegistrationType: string,
     },
@@ -40,6 +74,9 @@ export interface InvoiceStateInterface {
     scenarioId?: string,
     items: InvoiceItemInterface[],
 }
+
+// Zod schema for InvoiceStateInterface
+
 
 export interface AuthStateInterface {
     refresh_token: string | null,
@@ -68,38 +105,13 @@ export interface OrganizationStateInterface {
     email?: string,
     phone?: string,
     address?: string,
-    province?: string,
+    province?: ProviceType,
     website?: string,
     description?: string,
     status?: string,
     logo?: MediaStateInterface | null,
 }
 
-
-type ProviceType= {
-    stateProvinceCode: number,
-    stateProvinceDesc: string
-}
-type DocTypeType = {
-    docTypeId: number,
-    docDescription: string
-}
-type ItemCodeType = {
-    hS_CODE: string,
-    description: string
-}
-type SroItemCodeType = {
-  srO_ITEM_ID: number,
-  srO_ITEM_DESC: string
-}
-type TransTypeCodeType = {
-    transactioN_TYPE_ID: number,
-    transactioN_DESC: string
-}
-type UomType = {
-    uoM_ID: number,
-    description: string
-}
 
 export interface LookUpStateInterface {
     province: ProviceType[]

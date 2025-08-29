@@ -16,19 +16,19 @@ const ItemCard: React.FC<ItemCardType> = ({ item }) => {
                     <div className='text-sm text-foreground'>
                         <div className='flex flex-row mb-2 items-center'>
                             <Label className='text-sm text-foreground'>HS Code: </Label>
-                            <div className='text-xs text-foreground'>({item.hsCode})</div>
+                            <div className='text-xs text-foreground'>({item.hsCode ?? '--'})</div>
                         </div>
                         {item.productDescription}
                     </div>
                     <div className='col-span-3'>
-                        <div className='grid grid-cols-2 md:grid-cols-5 gap-3'>
+                        <div className='grid grid-cols-2 md:grid-cols-5 gap-3 place-items-end'>
                             <div>
                                 <Label className='text-sm text-foreground'>Quantity</Label>
-                                <div className='text-xs text-foreground'>{item.quantity}</div>
+                                <div className='text-xs text-foreground'>{item.quantity ?? '--'}</div>
                             </div>
                             <div>
                                 <Label className='text-sm text-foreground'>Unit Of Measure</Label>
-                                <div className='text-xs text-foreground'>{item.uoM}</div>
+                                <div className='text-xs text-foreground'>{item.uoM.description ?? '--'}</div>
                             </div>
                             <div>
                                 <Label className='text-sm text-foreground'>Price (Exc GST)</Label>
@@ -40,11 +40,11 @@ const ItemCard: React.FC<ItemCardType> = ({ item }) => {
                             </div>
                             <div>
                                 <Label className='text-sm text-foreground'>Sales Type</Label>
-                                <div className='text-xs text-foreground'>{item.saleType}</div>
+                                <div className='text-xs text-foreground'>{item.saleType?.transactioN_DESC ??'--'}</div>
                             </div>
                             <div>
                                 <Label className='text-sm text-foreground'>Tax rate</Label>
-                                <div className='text-xs text-foreground'>{item.rate}</div>
+                                <div className='text-xs text-foreground'>{item.rate?.ratE_DESC ?? '--'}</div>
                             </div>
                             <div>
                                 <Label className='text-sm text-foreground'>Tax Amount</Label>

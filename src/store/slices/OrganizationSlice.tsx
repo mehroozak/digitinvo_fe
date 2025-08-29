@@ -9,7 +9,10 @@ const initialState: OrganizationStateInterface = {
     name: 'Test Organization',
     address: 'Upper Mall, Lahore',
     ntn: '232322rf24ef',
-    province: 'Punjab',
+    province: {
+        "stateProvinceCode": 8,
+        "stateProvinceDesc": "SINDH"
+    },
     description: "This is a test organization",
     email: 'test@test.com',
     phone: '03001234567',

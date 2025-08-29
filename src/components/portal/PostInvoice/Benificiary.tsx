@@ -22,7 +22,7 @@ const Benificiary: React.FC<BenificiaryType> = ({ form }) => {
           </div>
           <div className='grid grid-cols-1 md:grid-cols-2'>
             <span className='text-sm text-foreground font-semibold'>Province</span>
-            <span className='text-sm text-foreground'>{form?.getValues('sellerProvince')}</span>
+            <span className='text-sm text-foreground lowercase'>{form?.getValues('sellerProvince')?.stateProvinceDesc ?? ''}</span>
           </div>
         </div>
       </CardContent>
