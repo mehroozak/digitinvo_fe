@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, type Draft, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/store/store'
-import type { InvoiceStateInterface } from './types'
+import type { InvoiceItemInterface, InvoiceStateInterface } from './types'
 import moment from 'moment'
 
 
@@ -30,7 +30,7 @@ const initialState: InvoiceStateInterface = {
       "hsCode": "1234.56",
       "productDescription": "FISH AND CRUSTACEANS, MOLLUSCS AND OTHER AQUATIC INVERTEBRATES - FISH FILLETS AND OTHER FISH MEAT (WHETHER OR NOT MINCED), FRESH, CHILLED OR FROZEN. - HAKE (MERLUCCIUS SPP., UROPHYCIS SPP.)",
       "rate": null,
-      "uoM": "pcs",
+      "uoM": null,
       "quantity": 100,
       "totalValues": 1850,
       "valueSalesExcludingST": 1700,
@@ -123,10 +123,13 @@ export const InvoiceSlice = createSlice({
   name: 'invoice',
   initialState,
   reducers: {
+    addItemToInvoice: (state: Draft<InvoiceStateInterface>, action: PayloadAction<InvoiceItemInterface>) => {
+      state.items = [...state.items, action.payload]
+    }
   },
 })
 
-export const { } = InvoiceSlice.actions
+export const { addItemToInvoice } = InvoiceSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 export const invoiceState = (state: RootState) => state.invoice

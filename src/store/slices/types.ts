@@ -32,13 +32,18 @@ export type RateType = {
     ratE_VALUE: number
 }
 
+export type SroScheduleNoType = {
+    srO_ID: number,
+    srO_DESC: string
+}
+
 
 export interface InvoiceItemInterface {
     key?: number,
     hsCode: string,
     productDescription: string,
     rate: RateType | null,
-    uoM: UomType,
+    uoM: UomType | null,
     quantity: number,
     totalValues: number,
     valueSalesExcludingST: number,
@@ -47,7 +52,7 @@ export interface InvoiceItemInterface {
     salesTaxWithheldAtSource: number,
     extraTax?: number,
     furtherTax?: number,
-    sroScheduleNo?: string,
+    sroScheduleNo?: SroScheduleNoType,
     fedPayable?: number,
     discount?: number,
     saleType: TransTypeCodeType | null,

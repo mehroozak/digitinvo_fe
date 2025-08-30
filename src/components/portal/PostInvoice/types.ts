@@ -3,7 +3,7 @@ import type z from "zod";
 import type { PostInvoiceSchema } from "./schemas";
 
 export type BenificiaryType = {
-    form?: UseFormReturn<z.infer<typeof PostInvoiceSchema>>;
+    form?: any
 }
 
 export type CustomerFormType = {

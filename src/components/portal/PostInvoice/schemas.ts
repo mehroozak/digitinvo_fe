@@ -22,8 +22,18 @@ export const TransTypeCodeTypeSchema = z.object({
 });
 
 export const UomTypeSchema = z.object({
-  uoM_ID: z.number(),
-  description: z.string(),
+    uoM_ID: z.number(),
+    description: z.string(),
+});
+
+export const SroItemCodeTypeSchema = z.object({
+    srO_ITEM_ID: z.number(),
+    srO_ITEM_DESC: z.string()
+})
+
+export const SroScheduleNoTypeSchema = z.object({
+  srO_ID: z.number(),
+  srO_DESC: z.string(),
 });
 
 export const PostInvoiceItemSchema = z.object({
@@ -31,19 +41,19 @@ export const PostInvoiceItemSchema = z.object({
     productDescription: z.string().min(1, "Item description is required"),
     rate: RateTypeSchema,
     uoM: UomTypeSchema,
-    quantity: z.number().min(1, "Quantity must be at least 1"),
-    totalValues: z.number().min(0, "Total Value must be at least 0"),
-    valueSalesExcludingST: z.number().min(0, "Value Sales Excluding ST must be at least 0"),
-    fixedNotifiedValueOrRetailPrice: z.number().min(0, "Fixed Notified Value or Retail Price must be at least 0"),
-    salesTaxApplicable: z.number().min(0, "Amount of Sales Tax/ FED insales tax mode must be at least 0"),
-    salesTaxWithheldAtSource: z.number().min(0, "Amount of Sales Tax/ FED withheld at source must be at least 0"),
+    quantity: z.coerce.number<number>().min(1, "Quantity must be at least 1"),
+    totalValues: z.coerce.number<number>().min(0, "Total Value must be at least 0"),
+    valueSalesExcludingST: z.coerce.number<number>().min(0, "Value Sales Excluding ST must be at least 0"),
+    fixedNotifiedValueOrRetailPrice: z.coerce.number<number>().min(0, "Fixed Notified Value or Retail Price must be at least 0"),
+    salesTaxApplicable: z.coerce.number<number>().min(0, "Amount of Sales Tax/ FED insales tax mode must be at least 0"),
+    salesTaxWithheldAtSource: z.coerce.number<number>().min(0, "Amount of Sales Tax/ FED withheld at source must be at least 0"),
     extraTax: z.number().min(0, "Amount of Extra Tax must be at least 0").optional(),
     furtherTax: z.number().min(0, "Amount of Further Tax must be at least 0").optional(),
-    sroScheduleNo: z.string().optional(),
+    sroScheduleNo: SroScheduleNoTypeSchema.optional(),
     fedPayable: z.number().min(0, "Amount of FED Payable must be at least 0").optional(),
     discount: z.number().min(0, "Amount of Discount must be at least 0").optional(),
     saleType: TransTypeCodeTypeSchema,
-    sroItemSerialNo: z.string().optional(),
+    sroItemSerialNo: SroItemCodeTypeSchema.optional(),
 })
 
 export const PostInvoiceSchema = z.object({

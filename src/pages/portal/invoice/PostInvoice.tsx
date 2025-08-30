@@ -47,14 +47,12 @@ const PostInvoice: React.FC = () => {
         buyerProvince: invoice.customer.buyerProvince,
         buyeRegistrationType: invoice.customer.buyeRegistrationType,
       },
-      items: invoice.items,
+      items: [],
     },
   })
   const formVals = form.watch();
   console.log('invoice', formVals)
   const items = form.getValues('items')
-
-
 
 
   function onSubmit(data: z.infer<typeof PostInvoiceSchema>) {
@@ -152,15 +150,14 @@ const PostInvoice: React.FC = () => {
           {formVals.invoiceDate && formVals.customer.buyerBusinessName && <div className='grid grid-cols-1 p-2'>
             <span className='text-lg font-semibold'>Subject: {formVals.invoiceType?.docDescription} to {formVals.customer.buyerBusinessName}</span>
           </div>}
-          <div className='grid grid-cols-1 p-2'>
-            <ItemForm form={form} />
-          </div>
-          <div className='px-2 overflow-x-auto'>
-            {items.map((item, index) => <ItemCard key={`it_${index}`} item={item} />)}
-          </div>
-
         </form>
       </Form>
+      <div className='px-2 overflow-x-auto'>
+        {items.map((item, index) => <ItemCard key={`it_${index}`} item={item} />)}
+      </div>
+       <div className='grid grid-cols-1 p-2'>
+        <ItemForm form={form} />
+      </div>
     </div>
   );
 };

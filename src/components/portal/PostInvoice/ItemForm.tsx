@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ItemFormType } from './types';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
-import { useAppSelector } from '@/hooks/redux';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { lookupState } from '@/store/slices/lookupSlice';
 import { PostInvoiceItemSchema } from './schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,13 +16,17 @@ import { cn } from '@/lib/utils';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/elements/command';
 import { Card, CardContent } from '@/components/elements/card';
-import type { RateType, TransTypeCodeType } from '@/store/slices/types';
+import type { RateType, SroItemCodeType, SroScheduleNoType, TransTypeCodeType } from '@/store/slices/types';
+import { addItemToInvoice } from '@/store/slices/IinvoiceSlice';
 
 const ItemForm: React.FC<ItemFormType> = ({ form: parentForm }) => {
+  const dispatch = useAppDispatch()
   const date = parentForm.watch('invoiceDate')
   const province = parentForm.watch('sellerProvince')
   const lookups = useAppSelector(lookupState)
   const [taxClases, setTaxClases] = useState<RateType[]>([])
+  const [sroSchedule, setSroSchedule] = useState<SroScheduleNoType[]>([])
+  const [sroItems, setSroItems] = useState<SroItemCodeType[]>([])
   // const [transactionTypeObj, setTransactionTypeObj] = useState<TransTypeCodeType | null>(null)
 
   const form = useForm<z.infer<typeof PostInvoiceItemSchema>>({
@@ -38,6 +42,9 @@ const ItemForm: React.FC<ItemFormType> = ({ form: parentForm }) => {
   console.log('Item', formVals)
 
   const salesType = form.watch('saleType')
+  const taxRate = form.watch('rate')
+  const sroScheduleNo = form.watch('sroScheduleNo')
+
 
   useEffect(() => {
     // /SaleTypeToRate?date=24-Feb2024&transTypeId=18&originationSupplier=1
@@ -56,15 +63,51 @@ const ItemForm: React.FC<ItemFormType> = ({ form: parentForm }) => {
           "ratE_VALUE": 0
         }
       ])
-
     }
-
-
   }, [date, salesType, province])
+
+  useEffect(() => {
+    // /SroSchedule?rate_id=413&date=04-Feb-2024&origination_supplier_csv=1
+    if (date && taxRate?.ratE_ID && province?.stateProvinceCode) {
+      // Implement Call For SRO Schedule
+      setSroSchedule([
+        {
+          "srO_ID": 7,
+          "srO_DESC": "Zero Rated Gas"
+        },
+        {
+          "srO_ID": 8,
+          "srO_DESC": "5th Schedule"
+        }
+      ])
+    }
+  }, [date, taxRate, province])
+
+  useEffect(() => {
+    // /SroSchedule?rate_id=413&date=04-Feb-2024&origination_supplier_csv=1
+    if (date && sroScheduleNo?.srO_ID) {
+      // Implement Call For SRO Schedule
+      setSroItems([
+        {
+          "srO_ITEM_ID": 17853,
+          "srO_ITEM_DESC": "50"
+        },
+        {
+          "srO_ITEM_ID": 17854,
+          "srO_ITEM_DESC": "51"
+        }
+      ])
+    }
+  }, [date, sroScheduleNo])
+
+
 
 
   function onSubmit(data: z.infer<typeof PostInvoiceItemSchema>) {
-    console.log("Form submitted with data:", data)
+    // dispatch(addItemToInvoice(data))
+    const items = parentForm.getValues('items')
+    parentForm.setValue('items', [...items, data])
+    form.reset()
   }
 
   return (
@@ -272,6 +315,41 @@ const ItemForm: React.FC<ItemFormType> = ({ form: parentForm }) => {
                       <FormMessage />
                     </FormItem>
                   )} />
+
+                  <FormField control={form.control} name="sroScheduleNo" render={({ field }) => (
+                    <FormItem className="">
+                      <FormLabel>SRO Item Code</FormLabel>
+                      <Select onValueChange={(v) => v ? field.onChange(JSON.parse(v)) : field.onChange(null)} value={field.value ? JSON.stringify(field.value) : ''}>
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select Rate" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {sroSchedule.map((ttc) => <SelectItem key={ttc.srO_ID} value={ttc ? JSON.stringify(ttc) : ''}>{ttc.srO_DESC}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+
+                  <FormField control={form.control} name="sroItemSerialNo" render={({ field }) => (
+                    <FormItem className="">
+                      <FormLabel>SRO Item Code</FormLabel>
+                      <Select onValueChange={(v) => v ? field.onChange(JSON.parse(v)) : field.onChange(null)} value={field.value ? JSON.stringify(field.value) : ''}>
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select Rate" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {sroItems.map((ttc) => <SelectItem key={ttc.srO_ITEM_ID} value={ttc ? JSON.stringify(ttc) : ''}>{ttc.srO_ITEM_DESC}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+
                   <FormField control={form.control} name="discount" render={({ field }) => (
                     <FormItem className="">
                       <FormLabel>Discount</FormLabel>
@@ -285,7 +363,7 @@ const ItemForm: React.FC<ItemFormType> = ({ form: parentForm }) => {
                     <FormItem className="">
                       <FormLabel>Total Sale</FormLabel>
                       <FormControl>
-                        <Input disabled type='number' {...field} placeholder='0.0' />
+                        <Input type='number' {...field} placeholder='0.0' />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -293,6 +371,9 @@ const ItemForm: React.FC<ItemFormType> = ({ form: parentForm }) => {
                 </div>
               </div>
             </div>
+            <Button>
+              Add
+            </Button>
           </form>
         </Form>
       </CardContent>
